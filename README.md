@@ -14,6 +14,8 @@ sender가 attacker에게 보낸 ip 패킷과,
 
 attacker가 target에게 보낼 ip 패킷을 다 출력창에서 볼 수 있도록 구현하였습니다.
 
+sender가 attacker에게 보낸 ip 패킷의 arp 헤더에서 source mac address가 sender의 mac address와 같아야 한다는 조건을 넣었습니다.
+
 
 
 3초마다 모든 (ith sender, ith target) 쌍에 대해서 ith sender가 ith target의 mac 주소를 attacker의 것으로 알게끔 구현하였고,
