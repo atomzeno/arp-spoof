@@ -4,7 +4,7 @@ sudo qmake arp-spoof
 
 sudo make
 
-sudo ./arp-spoof ens33([interface]) [sender ip address1] [target ip address1] [sender ip address2] [target ip address2] ...
+sudo ./arp-spoof [interface] [sender ip address1] [target ip address1] [sender ip address2] [target ip address2] ...
 
 로 실행시킬 수 있습니다.
 
