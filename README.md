@@ -54,30 +54,34 @@ My mac address : DD:DD:DD:DD:DD
    
 1th case of sender and target mac address finding started
    
-1th sender's ip  address!	: 192.168.123.1
-1th sender's mac address!	: AA:AA:AA:AA:AA:AA
+1th sender's ip  address!	: 192.168.123.1   
+1th sender's mac address!	: AA:AA:AA:AA:AA:AA   
    
-1th target's ip  address!	: 192.168.123.254
-1th target's mac address!	: CC:CC:CC:CC:CC:CC
+1th target's ip  address!	: 192.168.123.254   
+1th target's mac address!	: CC:CC:CC:CC:CC:CC   
    
-2th case of sender and target mac address finding started
+2th case of sender and target mac address finding started   
    
-I already searched that ip, mac that will be shown below
-2th sender's ip  address!	: 192.168.123.1
-2th sender's mac address!	: AA:AA:AA:AA:AA:AA
+I already searched that ip, mac that will be shown below   
+
+2th sender's ip  address!	: 192.168.123.1   
+2th sender's mac address!	: AA:AA:AA:AA:AA:AA   
+
+2th target's ip  address!	: 192.168.123.2   
+2th target's mac address!	: BB:BB:BB:BB:BB:BB   
    
-2th target's ip  address!	: 192.168.123.2
-2th target's mac address!	: BB:BB:BB:BB:BB:BB
+3th case of sender and target mac address finding started   
    
-3th case of sender and target mac address finding started
+I already searched that ip, mac that will be shown below   
+
+3th sender's ip  address!	: 192.168.123.2   
    
-I already searched that ip, mac that will be shown below
-3th sender's ip  address!	: 192.168.123.2
-3th sender's mac address!	: BB:BB:BB:BB:BB:BB
+3th sender's mac address!	: BB:BB:BB:BB:BB:BB   
    
-I already searched that ip, mac that will be shown below
-3th target's ip  address!	: 192.168.123.1
-3th target's mac address!	: AA:AA:AA:AA:AA:AA
+I already searched that ip, mac that will be shown below   
+
+3th target's ip  address!	: 192.168.123.1   
+3th target's mac address!	: AA:AA:AA:AA:AA:AA   
 
 arp spoofing started!
    
