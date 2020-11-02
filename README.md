@@ -1,12 +1,14 @@
 # arp-spoof
 
 sudo qmake arp-spoof
-
+  
 sudo make
-
+  
 sudo ./arp-spoof [interface] [sender ip address1] [target ip address1] [sender ip address2] [target ip address2] ...
-
+  
 로 실행시킬 수 있습니다.
+
+
 
 
 sender, target의 mac 주소를 구하는 과정에서 이미 구한 mac 주소의 경우, 
@@ -19,11 +21,15 @@ I already searched that ip, mac that will be shown below
 
 
 
+
+
 sender가 attacker에게 보낸 ip 패킷과,
 
 attacker가 target에게 보낼 ip 패킷의 헤더 크기를 출력창에서 볼 수 있도록 구현하였습니다.
 
 sender가 attacker에게 보낸 ip 패킷의 arp 헤더에서 source mac address가 sender의 mac address와 같아야 한다는 조건을 넣었습니다.
+
+
 
 
 
