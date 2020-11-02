@@ -86,144 +86,80 @@ packet's sender ip  address!	: 192.168.123.1
 packet's target ip  address!	: 192.168.123.254   
 74 bytes captured   
 IP header, total packet length : 15360   
-   
 I'll relay sender's packet to target!   
+   
    
 Ip packet that I received is 3th pair!   
 packet's sender ip  address!	: 192.168.123.2   
 packet's target ip  address!	: 192.168.123.1   
 74 bytes captured   
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+   
 Ip packet that I received is 2th pair!
-
-packet's sender ip  address!	: 192.168.123.1
-
-packet's target ip  address!	: 192.168.123.2
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
-Ip packet that I received is 2th pair!
-
-packet's sender ip  address!	: 192.168.123.1
-
-packet's target ip  address!	: 192.168.123.2
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
-Ip packet that I received is 2th pair!
-
-packet's sender ip  address!	: 192.168.123.1
-
-packet's target ip  address!	: 192.168.123.2
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
-Ip packet that I received is 3th pair!
-
-packet's sender ip  address!	: 192.168.123.2
-
-packet's target ip  address!	: 192.168.123.1
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
-Ip packet that I received is 2th pair!
-
-packet's sender ip  address!	: 192.168.123.1
-
-packet's target ip  address!	: 192.168.123.2
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
-Ip packet that I received is 3th pair!
-
-packet's sender ip  address!	: 192.168.123.2
-
-packet's target ip  address!	: 192.168.123.1
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
-
-
-Ip packet that I received is 2th pair!
-
-packet's sender ip  address!	: 192.168.123.1
-
-packet's target ip  address!	: 192.168.123.2
-
-74 bytes captured
-
-IP header, total packet length : 15360
-
-
-
-I'll relay sender's packet to target!
-
+packet's sender ip  address!	: 192.168.123.1   
+packet's target ip  address!	: 192.168.123.2   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+   
+Ip packet that I received is 2th pair!   
+packet's sender ip  address!	: 192.168.123.1   
+packet's target ip  address!	: 192.168.123.2   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+   
+Ip packet that I received is 2th pair!   
+packet's sender ip  address!	: 192.168.123.1   
+packet's target ip  address!	: 192.168.123.2   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+   
+Ip packet that I received is 3th pair!   
+packet's sender ip  address!	: 192.168.123.2   
+packet's target ip  address!	: 192.168.123.1   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+   
+Ip packet that I received is 2th pair!   
+packet's sender ip  address!	: 192.168.123.1   
+packet's target ip  address!	: 192.168.123.2   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+
+Ip packet that I received is 3th pair!   
+packet's sender ip  address!	: 192.168.123.2   
+packet's target ip  address!	: 192.168.123.1   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
+   
+Ip packet that I received is 2th pair!   
+packet's sender ip  address!	: 192.168.123.1   
+packet's target ip  address!	: 192.168.123.2   
+74 bytes captured   
+IP header, total packet length : 15360   
+I'll relay sender's packet to target!   
+   
 ^C
-
-
-
-Program will send recover arp reply packet and terminate!
-
-1th recover packet send!
-
-2th recover packet send!
-
-3th recover packet send!
-
+   
+   
+   
+Program will send recover arp reply packet and terminate!   
+1th recover packet send!   
+2th recover packet send!   
+3th recover packet send!   
 Press <RETURN> to close this window...
 
 
