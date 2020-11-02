@@ -28,7 +28,7 @@ sender가 attacker에게 보낸 ip 패킷의 arp 헤더에서 source mac address
   
   
   
-10ms마다 모든 (ith sender, ith target) 쌍에 대해서 ith sender가 ith target의 mac 주소를 attacker의 것으로 알게끔 구현하였고,
+100ms마다 모든 (ith sender, ith target) 쌍에 대해서 ith sender가 ith target의 mac 주소를 attacker의 것으로 알게끔 구현하였고,
   
 i번째 sender가 i번째 target의 mac address가 무엇인지 질의하는 arp request 에 대한 arp reply도 보내지도록 하였습니다.
   
