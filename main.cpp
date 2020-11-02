@@ -655,7 +655,7 @@ void* start_thread_send_attacking_packet_3s(void *arg){
         if(thread_exit==true){
             break;
         }
-        usleep(1000000);
+        usleep(100000);
         attacking_packet_send();
     }
     pthread_exit((void*)0);
