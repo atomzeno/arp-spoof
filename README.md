@@ -85,14 +85,14 @@ I already searched that ip, mac that will be shown below
 
 arp spoofing started!
    
-Ip packet that I received is 1th pair!
-packet's sender ip  address!	: 192.168.123.1
-packet's target ip  address!	: 192.168.123.254
-74 bytes captured
-IP header, total packet length : 15360
+Ip packet that I received is 1th pair!   
+packet's sender ip  address!	: 192.168.123.1   
+packet's target ip  address!	: 192.168.123.254   
+74 bytes captured   
+IP header, total packet length : 15360   
    
    
-I'll relay sender's packet to target!
+I'll relay sender's packet to target!   
 
 
 
